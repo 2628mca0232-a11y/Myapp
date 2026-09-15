@@ -1,5 +1,6 @@
 package com.MBA.myapplication.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,25 +21,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,94 +78,87 @@ fun LoanListView(
         }
     }
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onOpenAddModal,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Loan")
-            }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF8FAFC)),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Header
+        item {
+            Text(
+                text = "Loan Accounts",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Black,
+                color = Color(0xFF0F172A)
+            )
+            Text(
+                text = "Manage all active credit cards, personal, and vehicle loans",
+                fontSize = 12.sp,
+                color = Color(0xFF475569)
+            )
         }
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Color(0xFFF8FAFC)),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            // Header
-            item {
-                Text(
-                    text = "Loan Accounts",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A)
-                )
-                Text(
-                    text = "Manage all active credit cards, personal, and vehicle loans",
-                    fontSize = 12.sp,
-                    color = Color(0xFF64748B)
-                )
-            }
 
-            // Search Bar
-            item {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("Search by loan or bank name...") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true
-                )
-            }
+        // Search Bar
+        item {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = { Text("Search by loan or bank name...", color = Color(0xFF64748B)) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF64748B)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true
+            )
+        }
 
-            // Category Filter Chips
-            item {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(categories) { cat ->
-                        FilterChip(
-                            selected = selectedCategory == cat,
-                            onClick = { selectedCategory = cat },
-                            label = { Text(cat, fontSize = 12.sp) }
+        // Category Filter Chips
+        item {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(categories) { cat ->
+                    FilterChip(
+                        selected = selectedCategory == cat,
+                        onClick = { selectedCategory = cat },
+                        label = { Text(cat, fontSize = 12.sp, fontWeight = FontWeight.Bold) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color(0xFF2563EB),
+                            selectedLabelColor = Color.White,
+                            containerColor = Color(0xFFF1F5F9),
+                            labelColor = Color(0xFF0F172A)
                         )
-                    }
-                }
-            }
-
-            // Loan List
-            if (filteredLoans.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 40.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("No matching loan accounts found.", fontWeight = FontWeight.SemiBold, color = Color(0xFF64748B))
-                            Text("Try adjusting your search or add a new loan.", fontSize = 12.sp, color = Color(0xFF94A3B8))
-                        }
-                    }
-                }
-            } else {
-                items(filteredLoans) { loan ->
-                    LoanAccountCard(
-                        loan = loan,
-                        onViewDetails = { onViewDetails(loan) },
-                        onMarkPaid = { onMarkPaid(loan.id) },
-                        onEdit = { onEdit(loan) },
-                        onDelete = { onDelete(loan.id) },
-                        currencySymbol = currencySymbol
                     )
                 }
+            }
+        }
+
+        // Loan List
+        if (filteredLoans.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(48.dp), tint = Color(0xFF94A3B8))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("No matching loan accounts found.", fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
+                        Text("Try adjusting your search or add a new loan.", fontSize = 12.sp, color = Color(0xFF64748B))
+                    }
+                }
+            }
+        } else {
+            items(filteredLoans) { loan ->
+                LoanAccountCard(
+                    loan = loan,
+                    onViewDetails = { onViewDetails(loan) },
+                    onMarkPaid = { onMarkPaid(loan.id) },
+                    onEdit = { onEdit(loan) },
+                    onDelete = { onDelete(loan.id) },
+                    currencySymbol = currencySymbol
+                )
             }
         }
     }
@@ -191,10 +181,11 @@ fun LoanAccountCard(
             .fillMaxWidth()
             .clickable { onViewDetails() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(16.dp)
+        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(18.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(18.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -209,7 +200,7 @@ fun LoanAccountCard(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
-                        Text(loan.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text(loan.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF0F172A))
                         Text("${loan.bankName} • ${loan.category}", fontSize = 12.sp, color = Color(0xFF64748B))
                     }
                 }
@@ -253,7 +244,7 @@ fun LoanAccountCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             LinearProgressIndicator(
                 progress = { (pct / 100.0).toFloat() },
@@ -261,20 +252,21 @@ fun LoanAccountCard(
                     .fillMaxWidth()
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp)),
-                color = Color(0xFF2563EB)
+                color = Color(0xFF2563EB),
+                trackColor = Color(0xFFEFF6FF)
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("${pct.toInt()}% Paid", fontSize = 11.sp, color = Color(0xFF64748B))
-                Text("Due: ${loan.dueDay}th of month", fontSize = 11.sp, color = Color(0xFF64748B))
+                Text("${pct.toInt()}% Paid", fontSize = 11.sp, color = Color(0xFF64748B), fontWeight = FontWeight.Medium)
+                Text("Due: ${loan.dueDay}th of month", fontSize = 11.sp, color = Color(0xFF64748B), fontWeight = FontWeight.Medium)
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -284,12 +276,12 @@ fun LoanAccountCard(
                 Button(
                     onClick = onMarkPaid,
                     enabled = !loan.isCurrentMonthPaid,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
-                    shape = RoundedCornerShape(8.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF059669)),
+                    shape = RoundedCornerShape(10.dp)
                 ) {
-                    Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(14.dp))
+                    Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(if (loan.isCurrentMonthPaid) "Paid" else "Mark Paid", fontSize = 12.sp)
+                    Text(if (loan.isCurrentMonthPaid) "Paid" else "Mark Paid", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

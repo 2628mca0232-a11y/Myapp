@@ -1,5 +1,6 @@
 package com.MBA.myapplication.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,17 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -39,7 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -86,7 +82,6 @@ fun PaymentCalendarView(
         cal.get(Calendar.DAY_OF_WEEK) - 1 // 0 for Sunday
     }
 
-    // Map due day to loans
     val dueDayLoansMap = remember(loans) {
         val map = mutableMapOf<Int, MutableList<Loan>>()
         loans.forEach { loan ->
@@ -113,38 +108,39 @@ fun PaymentCalendarView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF8FAFC)),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Text("Payment Calendar", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
-            Text("Visual breakdown of upcoming loan EMI due dates", fontSize = 12.sp, color = Color(0xFF64748B))
+            Text("Payment Calendar", fontSize = 22.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
+            Text("Visual breakdown of upcoming loan EMI due dates", fontSize = 12.sp, color = Color(0xFF475569))
         }
 
-        // Calendar Header Navigation
+        // Calendar Card
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(16.dp)
+                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(18.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = { monthOffset-- }) {
-                            Icon(Icons.Default.ChevronLeft, contentDescription = "Prev Month")
+                            Icon(Icons.Default.ChevronLeft, contentDescription = "Prev Month", tint = Color(0xFF0F172A))
                         }
-                        Text(monthName, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(monthName, fontSize = 18.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
                         IconButton(onClick = { monthOffset++ }) {
-                            Icon(Icons.Default.ChevronRight, contentDescription = "Next Month")
+                            Icon(Icons.Default.ChevronRight, contentDescription = "Next Month", tint = Color(0xFF0F172A))
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     // Days of week header
                     Row(modifier = Modifier.fillMaxWidth()) {
@@ -155,12 +151,12 @@ fun PaymentCalendarView(
                                 textAlign = TextAlign.Center,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF94A3B8)
+                                color = Color(0xFF475569)
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     // Calendar Days Grid
                     Column {
@@ -183,21 +179,21 @@ fun PaymentCalendarView(
                                             val hasPaid = loansOnDay.any { it.isCurrentMonthPaid }
 
                                             val bgColor = when {
-                                                isSelected -> MaterialTheme.colorScheme.primary
-                                                isToday -> Color(0xFFDBEAFE)
+                                                isSelected -> Color(0xFF2563EB)
+                                                isToday -> Color(0xFFEFF6FF)
                                                 else -> Color.Transparent
                                             }
 
                                             val textColor = when {
                                                 isSelected -> Color.White
-                                                isToday -> Color(0xFF1E40AF)
+                                                isToday -> Color(0xFF2563EB)
                                                 else -> Color(0xFF0F172A)
                                             }
 
                                             Surface(
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .clip(RoundedCornerShape(10.dp))
                                                     .clickable { selectedDay = dayNum },
                                                 color = bgColor
                                             ) {
@@ -209,7 +205,7 @@ fun PaymentCalendarView(
                                                     Text(
                                                         "$dayNum",
                                                         fontSize = 13.sp,
-                                                        fontWeight = if (isToday || isSelected) FontWeight.Bold else FontWeight.Medium,
+                                                        fontWeight = if (isToday || isSelected) FontWeight.Black else FontWeight.Bold,
                                                         color = textColor
                                                     )
 
@@ -237,7 +233,6 @@ fun PaymentCalendarView(
                                         }
                                     }
                                 }
-                                // Fill remaining empty spaces in last row
                                 if (rowDays.size < 7) {
                                     for (k in 0 until (7 - rowDays.size)) {
                                         Spacer(modifier = Modifier.weight(1f))
@@ -265,10 +260,11 @@ fun PaymentCalendarView(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(12.dp)
+                    border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                    shape = RoundedCornerShape(14.dp)
                 ) {
-                    Box(modifier = Modifier.padding(24.dp), contentAlignment = Alignment.Center) {
-                        Text("No EMI payments scheduled for day $selectedDay.", fontSize = 13.sp, color = Color(0xFF64748B))
+                    Box(modifier = Modifier.padding(20.dp), contentAlignment = Alignment.Center) {
+                        Text("No EMI payments scheduled for day $selectedDay.", fontSize = 13.sp, color = Color(0xFF475569), fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -279,18 +275,18 @@ fun PaymentCalendarView(
                         .fillMaxWidth()
                         .clickable { onViewLoan(loan) },
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                    shape = RoundedCornerShape(14.dp)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(14.dp),
+                            .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(loan.name, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                            Text(loan.name, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color(0xFF0F172A))
                             Text("${loan.bankName} • ${loan.category}", fontSize = 12.sp, color = Color(0xFF64748B))
                         }
 
@@ -298,23 +294,24 @@ fun PaymentCalendarView(
                             Text(
                                 EmiCalculatorUtils.formatCurrency(loan.emiAmount, currencySymbol),
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 15.sp
+                                fontSize = 15.sp,
+                                color = Color(0xFF0F172A)
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             if (loan.isCurrentMonthPaid) {
-                                Surface(color = Color(0xFFD1FAE5), shape = RoundedCornerShape(8.dp)) {
+                                Surface(color = Color(0xFFECFDF5), shape = RoundedCornerShape(8.dp)) {
                                     Text("Paid ✓", color = Color(0xFF059669), fontSize = 11.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                                 }
                             } else {
                                 Button(
                                     onClick = { onMarkPaid(loan.id) },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF10B981)),
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF059669)),
                                     shape = RoundedCornerShape(8.dp),
                                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                                 ) {
                                     Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(12.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Mark Paid", fontSize = 11.sp)
+                                    Text("Mark Paid", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                                 }
                             }
                         }

@@ -1,5 +1,6 @@
 package com.MBA.myapplication.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -83,7 +85,7 @@ fun SettingsView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF8FAFC)),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
@@ -91,8 +93,8 @@ fun SettingsView(
                 Icon(Icons.Default.Settings, contentDescription = null, tint = Color(0xFF2563EB), modifier = Modifier.size(28.dp))
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
-                    Text("App Preferences & Data", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A))
-                    Text("Currency formatting, notification preferences, and backup data", fontSize = 12.sp, color = Color(0xFF64748B))
+                    Text("App Preferences & Data", fontSize = 22.sp, fontWeight = FontWeight.Black, color = Color(0xFF0F172A))
+                    Text("Currency formatting, notification preferences, and backup data", fontSize = 12.sp, color = Color(0xFF475569))
                 }
             }
         }
@@ -102,24 +104,25 @@ fun SettingsView(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(16.dp)
+                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(18.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Language, contentDescription = null, tint = Color(0xFF2563EB))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Currency Format", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Currency Format", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF0F172A))
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     Box(modifier = Modifier.fillMaxWidth()) {
                         OutlinedTextField(
                             value = "${settings.currencySymbol} (${settings.currencyCode})",
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("Display Currency") },
+                            label = { Text("Display Currency", color = Color(0xFF475569)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { currencyDropdownOpen = true }
@@ -130,7 +133,7 @@ fun SettingsView(
                         ) {
                             currencyOptions.forEach { (label, pair) ->
                                 DropdownMenuItem(
-                                    text = { Text(label) },
+                                    text = { Text(label, fontWeight = FontWeight.Bold, color = Color(0xFF0F172A)) },
                                     onClick = {
                                         onUpdateSettings(settings.copy(currencySymbol = pair.first, currencyCode = pair.second))
                                         currencyDropdownOpen = false
@@ -148,30 +151,35 @@ fun SettingsView(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(16.dp)
+                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(18.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Notifications, contentDescription = null, tint = Color(0xFF7C3AED))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Notification Preferences", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Notification Preferences", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF0F172A))
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text("In-App EMI Reminders", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("In-App EMI Reminders", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xFF0F172A))
                             Text("Alerts for due & overdue payments", fontSize = 12.sp, color = Color(0xFF64748B))
                         }
                         Switch(
                             checked = settings.notificationsEnabled,
-                            onCheckedChange = { onUpdateSettings(settings.copy(notificationsEnabled = it)) }
+                            onCheckedChange = { onUpdateSettings(settings.copy(notificationsEnabled = it)) },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color.White,
+                                checkedTrackColor = Color(0xFF2563EB)
+                            )
                         )
                     }
                 }
@@ -183,14 +191,15 @@ fun SettingsView(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(16.dp)
+                border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Backup, contentDescription = null, tint = Color(0xFF059669))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Data Backup & Restore", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Data Backup & Restore", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF0F172A))
                     }
 
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -200,11 +209,12 @@ fun SettingsView(
                                 showExportDialog = true
                             },
                             modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
                         ) {
                             Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Export JSON", fontSize = 12.sp)
+                            Text("Export JSON", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
 
                         OutlinedButton(
@@ -217,11 +227,9 @@ fun SettingsView(
                         ) {
                             Icon(Icons.Default.Upload, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Import JSON", fontSize = 12.sp)
+                            Text("Import JSON", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(4.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         OutlinedButton(
@@ -231,7 +239,7 @@ fun SettingsView(
                         ) {
                             Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Reset Demo Data", fontSize = 12.sp)
+                            Text("Reset Demo", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
 
                         Button(
@@ -242,7 +250,7 @@ fun SettingsView(
                         ) {
                             Icon(Icons.Default.DeleteForever, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Clear All Data", fontSize = 12.sp)
+                            Text("Clear Data", fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -265,9 +273,9 @@ fun SettingsView(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Export Backup JSON", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text("Export Backup JSON", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF0F172A))
                         IconButton(onClick = { showExportDialog = false }) {
-                            Icon(Icons.Default.Close, contentDescription = "Close")
+                            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF64748B))
                         }
                     }
                     Text("Copy your loan data backup payload below:", fontSize = 12.sp, color = Color(0xFF64748B))
@@ -287,7 +295,8 @@ fun SettingsView(
 
                     Button(
                         onClick = { showExportDialog = false },
-                        modifier = Modifier.align(Alignment.End)
+                        modifier = Modifier.align(Alignment.End),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
                     ) {
                         Text("Done")
                     }
@@ -311,9 +320,9 @@ fun SettingsView(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Import Backup JSON", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text("Import Backup JSON", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF0F172A))
                         IconButton(onClick = { showImportDialog = false }) {
-                            Icon(Icons.Default.Close, contentDescription = "Close")
+                            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF64748B))
                         }
                     }
                     Text("Paste your exported loan data JSON below to restore:", fontSize = 12.sp, color = Color(0xFF64748B))
@@ -326,7 +335,7 @@ fun SettingsView(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp),
-                        placeholder = { Text("Paste JSON array here...") }
+                        placeholder = { Text("Paste JSON array here...", color = Color(0xFF94A3B8)) }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -343,7 +352,8 @@ fun SettingsView(
                                     showImportDialog = false
                                 }
                             },
-                            enabled = importJsonText.isNotBlank()
+                            enabled = importJsonText.isNotBlank(),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
                         ) {
                             Text("Restore Data")
                         }
